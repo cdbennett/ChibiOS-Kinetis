@@ -3,6 +3,7 @@
 	<name>ARMCM0P-FREEDOM-KL25Z</name>
 	<comment></comment>
 	<projects>
+		<project>ChibiOS-RT (whole tree)</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
