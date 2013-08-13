@@ -18,6 +18,8 @@
 #include "hal.h"
 #include "test.h"
 
+static volatile int baseBlinkTime = 300;
+
 static WORKING_AREA(waThread1, 64);
 static msg_t Thread1(void *arg)
 {
@@ -25,7 +27,7 @@ static msg_t Thread1(void *arg)
   chRegSetThreadName("RedBlinker");
   while (TRUE) {
     palTogglePad(IOPORT2, 18);
-    chThdSleepMilliseconds(300);
+    chThdSleepMilliseconds(baseBlinkTime);
   }
 }
 
@@ -36,7 +38,7 @@ static msg_t Thread2(void *arg)
   chRegSetThreadName("GreenBlinker");
   while (TRUE) {
     palTogglePad(IOPORT2, 19);
-    chThdSleepMilliseconds(600);
+    chThdSleepMilliseconds(2 * baseBlinkTime);
   }
 }
 
@@ -47,7 +49,7 @@ static msg_t Thread3(void *arg)
   chRegSetThreadName("BlueBlinker");
   while (TRUE) {
     palTogglePad(IOPORT4, 1);
-    chThdSleepMilliseconds(900);
+    chThdSleepMilliseconds(3 * baseBlinkTime);
   }
 }
 
@@ -79,6 +81,10 @@ int main(void) {
   chThdCreateStatic(waThread3, sizeof(waThread3), NORMALPRIO, Thread3, NULL);
 
   TestThread(&SD1);
+
+  // Slow down the blink time to indicate test is completed.
+  baseBlinkTime = 1000;
+
   while (TRUE) {
     chThdSleepMilliseconds(500);
   }
