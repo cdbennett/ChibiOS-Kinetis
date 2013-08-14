@@ -156,6 +156,24 @@ typedef struct
 
 typedef struct
 {
+  __IO uint32_t  SAR;
+  __IO uint32_t  DAR;
+  __IO uint32_t  DSR_BCR;
+  __IO uint32_t  DCR;
+} DMAChannel_TypeDef;
+
+typedef struct
+{
+  DMAChannel_TypeDef ch[4];
+} DMA_TypeDef;
+
+typedef struct
+{
+  __IO uint8_t  CHCFG[4];
+} DMAMUX_TypeDef;
+
+typedef struct
+{
   __IO uint32_t SC;
   __IO uint32_t CNT;
   __IO uint32_t MOD;
@@ -247,6 +265,8 @@ typedef struct
 /****************************************************************/
 /*                  Peripheral memory map                       */
 /****************************************************************/
+#define DMA_BASE                ((uint32_t)0x40008100)
+#define DMAMUX_BASE             ((uint32_t)0x40021000)
 #define TPM0_BASE               ((uint32_t)0x40038000)
 #define TPM1_BASE               ((uint32_t)0x40039000)
 #define TPM2_BASE               ((uint32_t)0x4003A000)
@@ -274,6 +294,8 @@ typedef struct
 /****************************************************************/
 /*                 Peripheral declaration                       */
 /****************************************************************/
+#define DMA                     ((DMA_TypeDef *)     DMA_BASE)
+#define DMAMUX                  ((DMAMUX_TypeDef *)  DMAMUX_BASE)
 #define TPM0                    ((TPM_TypeDef *)     TPM0_BASE)
 #define TPM1                    ((TPM_TypeDef *)     TPM1_BASE)
 #define TPM2                    ((TPM_TypeDef *)     TPM2_BASE)
@@ -377,6 +399,59 @@ typedef struct
 #define OSC_CR_SC4P                  ((uint8_t)0x04)    /*!< Oscillator 4pF Capacitor Load Configure */
 #define OSC_CR_SC8P                  ((uint8_t)0x02)    /*!< Oscillator 8pF Capacitor Load Configure */
 #define OSC_CR_SC16P                 ((uint8_t)0x01)    /*!< Oscillator 16pF Capacitor Load Configure */
+
+/****************************************************************/
+/*                                                              */
+/*                 Direct Memory Access (DMA)                   */
+/*                                                              */
+/****************************************************************/
+/***********  Bits definition for DMA_BCRn register  ************/
+#define DMA_DSR_BCRn_CE              ((uint32_t)1 << 30)    /*!< Configuration Error */
+#define DMA_DSR_BCRn_BES             ((uint32_t)1 << 29)    /*!< Bus Error on Source */
+#define DMA_DSR_BCRn_BED             ((uint32_t)1 << 28)    /*!< Bus Error on Destination */
+#define DMA_DSR_BCRn_REQ             ((uint32_t)1 << 26)    /*!< Request */
+#define DMA_DSR_BCRn_BSY             ((uint32_t)1 << 25)    /*!< Busy */
+#define DMA_DSR_BCRn_DONE            ((uint32_t)1 << 24)    /*!< Transactions done */
+#define DMA_DSR_BCRn_BCR_MASK        ((uint32_t)0x00FFFFFF) /*!< Bytes yet to be transferred for block */
+/***********  Bits definition for DMA_DCRn register  ************/
+#define DMA_DCRn_EINT            ((uint32_t)1 << 31)    /*!< Enable interrupt on completion of transfer */
+#define DMA_DCRn_ERQ             ((uint32_t)1 << 30)    /*!< Enable peripheral request */
+#define DMA_DCRn_CS              ((uint32_t)1 << 29)    /*!< Cycle steal */
+#define DMA_DCRn_AA              ((uint32_t)1 << 28)    /*!< Auto-align */
+#define DMA_DCRn_EADREQ          ((uint32_t)1 << 23)    /*!< Enable asynchronous DMA requests */
+#define DMA_DCRn_SINC            ((uint32_t)1 << 22)    /*!< Source increment */
+#define DMA_DCRn_SSIZE1          ((uint32_t)1 << 21)    /*!< Source size (bit 1) */
+#define DMA_DCRn_SSIZE0          ((uint32_t)1 << 20)    /*!< Source size (bit 0) */
+#define DMA_DCRn_DINC            ((uint32_t)1 << 19)    /*!< Destination increment */
+#define DMA_DCRn_DSIZE1          ((uint32_t)1 << 18)    /*!< Destination size (bit 1) */
+#define DMA_DCRn_DSIZE0          ((uint32_t)1 << 17)    /*!< Destination size (bit 0) */
+#define DMA_DCRn_START           ((uint32_t)1 << 16)    /*!< Start transfer */
+#define DMA_DCRn_SMOD3           ((uint32_t)1 << 15)    /*!< Source address modulo (bit 3) */
+#define DMA_DCRn_SMOD2           ((uint32_t)1 << 14)    /*!< Source address modulo (bit 2) */
+#define DMA_DCRn_SMOD1           ((uint32_t)1 << 13)    /*!< Source address modulo (bit 1) */
+#define DMA_DCRn_SMOD0           ((uint32_t)1 << 12)    /*!< Source address modulo (bit 0) */
+#define DMA_DCRn_DMOD3           ((uint32_t)1 << 11)    /*!< Destination address modulo (bit 3) */
+#define DMA_DCRn_DMOD2           ((uint32_t)1 << 10)    /*!< Destination address modulo (bit 2) */
+#define DMA_DCRn_DMOD1           ((uint32_t)1 <<  9)    /*!< Destination address modulo (bit 1) */
+#define DMA_DCRn_DMOD0           ((uint32_t)1 <<  8)    /*!< Destination address modulo (bit 0) */
+#define DMA_DCRn_D_REQ           ((uint32_t)1 <<  7)    /*!< Disable request */
+#define DMA_DCRn_LINKCC1         ((uint32_t)1 <<  5)    /*!< Link channel control (bit 1) */
+#define DMA_DCRn_LINKCC0         ((uint32_t)1 <<  4)    /*!< Link channel control (bit 0) */
+#define DMA_DCRn_LCH1_1          ((uint32_t)1 <<  3)    /*!< Link channel 1 (bit 1) */
+#define DMA_DCRn_LCH1_0          ((uint32_t)1 <<  2)    /*!< Link channel 1 (bit 0) */
+#define DMA_DCRn_LCH2_1          ((uint32_t)1 <<  1)    /*!< Link channel 2 (bit 1) */
+#define DMA_DCRn_LCH2_0          ((uint32_t)1 <<  0)    /*!< Link channel 2 (bit 0) */
+
+/****************************************************************/
+/*                                                              */
+/*         Direct Memory Access Multiplexer (DMAMUX)            */
+/*                                                              */
+/****************************************************************/
+/********  Bits definition for DMAMUX_CHCFGn register  **********/
+#define DMAMUX_CHCFGn_ENBL           ((uint8_t)1 << 7)  /*!< DMA Channel Enable */
+#define DMAMUX_CHCFGn_TRIG           ((uint8_t)1 << 6)  /*!< DMA Channel Trigger Enable */
+#define DMAMUX_CHCFGn_SOURCE_MASK    ((uint8_t)0x3F)    /*!< DMA Channel Source (Slot) */
+#define DMAMUX_CHCFGn_SOURCE_POS     (0)                /*!< DMA Channel Source (Slot) */
 
 /****************************************************************/
 /*                                                              */
